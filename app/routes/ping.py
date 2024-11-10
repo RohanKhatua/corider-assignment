@@ -1,11 +1,11 @@
 from flask import Blueprint, jsonify
-from db import db
+from app.db import db
 
 ping_bp = Blueprint("ping_bp", __name__)
 
 
 @ping_bp.route("/ping/db")
-def index():
+def db_ping():
     try:
         db.command("ping")
         return jsonify({"status": "ok"})
@@ -14,5 +14,5 @@ def index():
 
 
 @ping_bp.route("/ping/app")
-def index():
+def app_ping():
     return jsonify({"status": "ok"})
