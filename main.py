@@ -1,9 +1,11 @@
 from flask import Flask, jsonify
 from app.db import db
 from app.routes.users import user_bp
+from app.routes.ping import ping_bp
 
 app = Flask(__name__)
 app.register_blueprint(user_bp)
+app.register_blueprint(ping_bp)
 
 
 @app.route("/")
