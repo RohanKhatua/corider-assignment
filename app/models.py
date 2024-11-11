@@ -24,13 +24,23 @@ class UserModel:
             return {"error": str(e)}
 
     @staticmethod
-    def get_all():
+    def get_all(query=None, limit=None):
         try:
-            return UserModel.collection.find()
+            # Initialize the query to an empty dictionary if none is provided
+            query = query or {}
+
+            # Create the base cursor
+            cursor = UserModel.collection.find(query)
+
+            # Apply limit if specified
+            if limit:
+                cursor = cursor.limit(limit)
+
+            return cursor
         except Exception as e:
             # Handle exceptions
             print(f"An error occurred: {e}")
-            return {"error": str(e)}
+            return None
 
     @staticmethod
     def get_one(id):
