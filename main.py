@@ -28,4 +28,4 @@ app.register_blueprint(ping_bp)
 
 if __name__ == "__main__":
     print("Starting the app")
-    app.run(host="0.0.0.0", port=int(os.getenv("FLASK_PORT")), debug=True)
+    app.run(host="0.0.0.0", port=6000, debug=True)

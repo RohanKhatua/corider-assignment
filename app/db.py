@@ -14,9 +14,12 @@ def init_db():
     global db  # Use the global db variable
     try:
         log.info("Connecting to MongoDB...")
-        client = MongoClient(Config.MONGO_URI, serverSelectionTimeoutMS=5000)
+        log.info(f"Mongo URI: {Config.MONGO_URI}")
+        client = MongoClient(
+            Config.MONGO_URI, serverSelectionTimeoutMS=60000  # 1 minute timeout
+        )
         client.server_info()  # Trigger connection attempt
-        db = client[Config.MONGO_DB_NAME]
+        db = client.get_database("mydatabase")  # Set the database name
         log.info(f"Connected to MongoDB: {db._name}")
         return db
     except errors.ServerSelectionTimeoutError as e:
