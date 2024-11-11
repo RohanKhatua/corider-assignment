@@ -17,6 +17,7 @@ try:
 except RuntimeError as e:
     sys.exit(str(e))  # Exit the app with an error if the DB check fails
 
+# import flask and the routes after the db is initialized
 from flask import Flask
 from app.routes.users import user_bp
 from app.routes.ping import ping_bp
@@ -27,5 +28,4 @@ app.register_blueprint(ping_bp)
 
 
 if __name__ == "__main__":
-    print("Starting the app")
     app.run(host="0.0.0.0", port=6000, debug=True)

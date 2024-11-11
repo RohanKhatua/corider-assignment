@@ -21,25 +21,24 @@ def create_user():
 @user_bp.route("/users", methods=["GET"])
 def get_all_users():
     try:
-        # Get cursor and per_page parameters from query string
+        # Get query parameters
         cursor_id = request.args.get("cursor")
         per_page = int(request.args.get("per_page", 10))
 
-        # Build query for cursor-based pagination
         query = {}
+        # check if cursor_id is provided
         if cursor_id:
             query["_id"] = {"$gt": ObjectId(cursor_id)}
 
-        # Fetch the users with cursor-based pagination
         cursor = UserModel.get_all(query=query, limit=per_page)
         result = list(cursor)
 
-        # Prepare the next cursor
+        # The next cursor is the last document's ObjectId
         next_cursor = result[-1]["_id"] if result else None
 
         # Convert ObjectId to string for each user document
         response_data = {
-            "users": json_util.loads(json_util.dumps(result)),
+            "users": result,
             "next_cursor": str(next_cursor) if next_cursor else None,
         }
 

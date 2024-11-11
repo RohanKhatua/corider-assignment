@@ -2,6 +2,9 @@ from app.db import db
 from bson.objectid import ObjectId
 from app.schemas import UserSchema
 from pydantic import ValidationError
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class UserModel:
@@ -10,17 +13,15 @@ class UserModel:
     @staticmethod
     def create(data):
         try:
-            user = UserSchema(**data)
+            user = UserSchema(**data)  # Validate the data using the schema
             user_id = UserModel.collection.insert_one(user.model_dump()).inserted_id
             return {"_id": str(user_id)}
         except ValidationError as e:
             # Handle validation error
-            print(f"Validation error: {e}")
+            log.error(f"Validation error: {e}")
             return {"error": f"Validation error: {str(e)}"}
         except Exception as e:
-            # Handle other exceptions such as database errors
-            # Log the error
-            print(f"An error occurred: {e}")
+            log.error(f"An error occurred: {e}")
             return {"error": str(e)}
 
     @staticmethod
@@ -39,7 +40,7 @@ class UserModel:
             return cursor
         except Exception as e:
             # Handle exceptions
-            print(f"An error occurred: {e}")
+            log.error(f"An error occurred: {e}")
             return None
 
     @staticmethod
@@ -48,28 +49,28 @@ class UserModel:
             return UserModel.collection.find_one({"_id": ObjectId(id)})
         except Exception as e:
             # Handle exceptions
-            print(f"An error occurred: {e}")
+            log.error(f"An error occurred: {e}")
             return {"error": str(e)}
 
     @staticmethod
     def update(id, data):
         try:
-            user = UserSchema(**data)
+            user = UserSchema(**data)  # Validate the data using the schema
+            # calling update_one with the filter and the update document
             updated_user = UserModel.collection.update_one(
                 {"_id": ObjectId(id)}, {"$set": user.model_dump()}
             )
-            # print("user updated")
-            # print(f"Updated user ID: {updated_user.upserted_id}")
+
             return updated_user
             # return {"_id": str(updated_user_id), "message": "User updated"}
         except ValidationError as e:
             # Handle validation error
-            print(f"Validation error: {e}")
+            log.error(f"Validation error: {e}")
             return {"error": f"Validation error: {str(e)}"}
         except Exception as e:
             # Handle other exceptions such as database errors
             # Log the error
-            print(f"An error occurred: {e}")
+            log.error(f"An error occurred: {e}")
             return {"error": str(e)}
 
     @staticmethod
@@ -78,5 +79,5 @@ class UserModel:
             return UserModel.collection.delete_one({"_id": ObjectId(id)})
         except Exception as e:
             # Handle exceptions
-            print(f"An error occurred: {e}")
+            log.error(f"An error occurred: {e}")
             return {"error": str(e)}
