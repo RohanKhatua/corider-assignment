@@ -8,12 +8,9 @@ COPY . .
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-# RUN pip install -r requirements.txt
-
 
 # Expose the port the app runs on - 6000
-
 EXPOSE 6000
 
-# Run app.py when the container launches
-CMD ["gunicorn", "-b", "0.0.0.0:6000", "main:app"]
+# Run app.py when the container launches with specified number of workers
+CMD ["gunicorn", "-b", "0.0.0.0:6000", "--workers", "4", "main:app"]
