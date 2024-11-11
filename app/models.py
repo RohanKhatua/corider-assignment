@@ -4,6 +4,8 @@ from app.schemas import UserSchema
 from pydantic import ValidationError
 import logging
 
+from app.utils.hash_password import hash_password
+
 log = logging.getLogger(__name__)
 
 
@@ -14,6 +16,11 @@ class UserModel:
     def create(data):
         try:
             user = UserSchema(**data)  # Validate the data using the schema
+
+            # Hash the password before storing it
+            if "password" in user.model_dump():
+                user.password = hash_password(user.password)
+
             user_id = UserModel.collection.insert_one(user.model_dump()).inserted_id
             return {"_id": str(user_id)}
         except ValidationError as e:
